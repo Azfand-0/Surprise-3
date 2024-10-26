@@ -33,6 +33,11 @@
         z-index: 1;
         animation: fadeIn 1.5s ease-in-out;
         margin: 10px;
+        overflow: hidden;
+        max-height: 80vh; /* Limit height for overflow */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       .card h1 {
@@ -46,6 +51,7 @@
         font-size: 1.1em;
         margin-bottom: 30px;
         color: #444;
+        line-height: 1.5; /* Increase line height for readability */
       }
 
       .button-container {
@@ -82,6 +88,28 @@
         display: none;
         animation: fadeInMessage 1s ease forwards;
         padding: 0 10px;
+        white-space: pre-line; /* Preserve line breaks in the poem */
+        overflow-y: auto; /* Enable scrolling for the poem */
+        max-height: 60vh; /* Set a max height for the poem display */
+        scrollbar-width: thin; /* For Firefox */
+        scrollbar-color: #ff6b6b transparent; /* For Firefox */
+      }
+
+      /* Webkit scrollbar styling */
+      #message::-webkit-scrollbar,
+      #poem::-webkit-scrollbar {
+        width: 12px; /* Width of the scrollbar */
+      }
+
+      #message::-webkit-scrollbar-thumb,
+      #poem::-webkit-scrollbar-thumb {
+        background-color: #ff6b6b; /* Color of the scrollbar thumb */
+        border-radius: 10px; /* Rounded corners */
+      }
+
+      #message::-webkit-scrollbar-track,
+      #poem::-webkit-scrollbar-track {
+        background: transparent; /* Background of the scrollbar track */
       }
 
       .blue-heart {
@@ -90,32 +118,9 @@
         margin-top: 10px;
       }
 
-      /* Hugs GIF */
-      #hugsGif {
-        width: 200px; /* Smaller size */
-        height: 200px; /* Smaller size */
-        margin-left: auto; /* Center horizontally */
-        margin-right: auto; /* Center horizontally */
-      }
-
-      /* Center the GIF container */
-      .gif-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column; /* Stack elements vertically */
-        margin-top: 20px;
-      }
-
-      /* Hug animation */
-      .hug {
-        position: absolute;
-        font-size: 1.5em;
-        animation: float 3s infinite ease-in-out;
-      }
-
       /* Heart animation */
-      .heart {
+      .heart,
+      .hug {
         position: absolute;
         font-size: 1.5em;
         animation: float 3s infinite ease-in-out;
@@ -217,23 +222,20 @@
       </div>
       <p id="message"></p>
       <pre id="poem" style="display: none"></pre>
-      <div id="blueHeart" class="blue-heart" style="display: none">💙</div>
-
-      <!-- Hugs GIF in smaller size -->
-      <div class="gif-container" id="hugsGifContainer" style="display: none">
+      <div
+        id="hugsGifContainer"
+        style="display: none; justify-content: center; align-items: center"
+      >
         <iframe
           src="https://giphy.com/embed/c6Wwc9cT05vMdhyTcM"
+          width="250"
+          height="250"
           frameborder="0"
           class="giphy-embed"
           allowfullscreen
-          id="hugsGif"
         ></iframe>
-        <p id="hugsGifLink">
-          <a href="https://giphy.com/gifs/cute-aww-wholesome-c6Wwc9cT05vMdhyTcM"
-            >via GIPHY</a
-          >
-        </p>
       </div>
+      <div id="blueHeart" class="blue-heart" style="display: none">💙</div>
     </div>
 
     <!-- JavaScript for Hearts and Messages -->
@@ -251,8 +253,8 @@
         message.style.display = "block";
         message.textContent =
           "In every step you take, remember that you are never alone; we stand beside you, offering unwavering support and love, always here for you.";
-
         createHearts();
+        autoScroll(); // Automatically scroll to the bottom
       }
 
       function createHearts() {
@@ -266,56 +268,59 @@
           heart.style.color = colors[Math.floor(Math.random() * colors.length)];
           heart.style.fontSize = Math.random() * 20 + 10 + "px";
           heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+          heart.style.position = "absolute"; // Position it absolutely
 
           setTimeout(() => {
-            heart.remove();
+            heart.remove(); // Remove the heart after 3 seconds
           }, 3000);
         }
       }
 
       function showPoem() {
         hideAll(); // Hide all other elements
-        const poem = document.getElementById("poem");
-        poem.style.display = "block";
-        poem.textContent = `
-A Birthday Wish
+        const poemElement = document.getElementById("poem");
+        poemElement.style.display = "block";
+        poemElement.textContent = `A Birthday Wish for Dear Aena
 
-On this day, a star was born,
-With a heart as bright as the early morn.
-Each moment shared, a treasure divine,
-In laughter and love, your spirit shines.
+In the garden of life, today blooms a flower,
+A radiant soul, shining brighter by the hour.
+With laughter like sunshine, and kindness so true,
+The world feels more vibrant, just because of you.
 
-May your path be lit with joy anew,
-As dreams take flight and skies turn blue.
-With every hug and every cheer,
-Know in our hearts, you’re always near.
+Each moment you cherish, each dream you embrace,
+Leaves traces of joy, like a soft, warm embrace.
+As candles flicker softly, and wishes take flight,
+May this year bring you magic, and days warm and bright.
 
-So here's to you, on your special day,
-With love and blessings, we all say:
-Happy Birthday, may your wishes come true,
-With all our hearts, we celebrate you!
-`;
+Dance in the rain, let your spirit be free,
+With love all around you, as deep as the sea.
+May your path be adorned with adventures anew,
+And may every heartbeat sing blessings for you.
+
+So here’s to the laughter, the joy, and the cheer,
+To the moments of wonder that fill up your year.
+Happy birthday, dear friend, may your dreams all come true,
+For the world is much brighter, simply because of you.`;
 
         const blueHeart = document.getElementById("blueHeart");
         blueHeart.style.display = "block";
 
         createBlueHearts();
+        autoScroll(); // Automatically scroll to the bottom
       }
 
       function createBlueHearts() {
         for (let i = 0; i < 50; i++) {
-          const blueHeart = document.createElement("div");
-          blueHeart.classList.add("heart");
-          blueHeart.textContent = "💙"; // Blue heart emoji
-          document.body.appendChild(blueHeart);
-          blueHeart.style.left = Math.random() * 100 + "vw";
-          blueHeart.style.fontSize = Math.random() * 20 + 10 + "px";
-          blueHeart.style.animationDuration = Math.random() * 2 + 3 + "s";
-          blueHeart.style.color = "blue"; // Set the color to blue
-          blueHeart.style.position = "absolute"; // Position it absolutely
+          const heart = document.createElement("div");
+          heart.classList.add("hug");
+          heart.textContent = "💙";
+          document.body.appendChild(heart);
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.animationDuration = Math.random() * 3 + 1 + "s";
+          heart.style.position = "absolute"; // Position it absolutely
 
           setTimeout(() => {
-            blueHeart.remove(); // Remove the blue heart after 3 seconds
+            heart.remove(); // Remove the heart after 3 seconds
           }, 3000);
         }
       }
@@ -323,27 +328,31 @@ With all our hearts, we celebrate you!
       function showHugs() {
         hideAll(); // Hide all other elements
         const hugsGifContainer = document.getElementById("hugsGifContainer");
-        hugsGifContainer.style.display = "flex"; // Show the GIF container
-        createHugConfetti(); // Call the function to create hug emoji confetti
+        hugsGifContainer.style.display = "flex"; // Use flex to center it
+        createHugConfetti();
+        autoScroll(); // Automatically scroll to the bottom
+      }
+
+      function autoScroll() {
+        window.scrollTo(0, document.body.scrollHeight);
       }
 
       function createHugConfetti() {
         for (let i = 0; i < 50; i++) {
           const hug = document.createElement("div");
           hug.classList.add("hug");
-          hug.textContent = "🤗"; // Hug emoji
+          hug.textContent = "🤗";
           document.body.appendChild(hug);
           hug.style.left = Math.random() * 100 + "vw";
-          hug.style.fontSize = Math.random() * 20 + 10 + "px";
-          hug.style.animationDuration = Math.random() * 2 + 3 + "s";
-          hug.style.color = "pink"; // Set the color to pink
+          hug.style.animationDuration = Math.random() * 3 + 2 + "s";
           hug.style.position = "absolute"; // Position it absolutely
 
           setTimeout(() => {
-            hug.remove(); // Remove the hug emoji after 3 seconds
+            hug.remove(); // Remove the heart after 3 seconds
           }, 3000);
         }
       }
     </script>
   </body>
 </html>
+
